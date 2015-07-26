@@ -78,7 +78,7 @@ public class MyMouseLook : MonoBehaviour {
 //		rotationY = camera.transform.localEulerAngles.y;
 		
 		// Make the rigid body not change rotation
-		if (rigidbody)
-			rigidbody.freezeRotation = true;
+		if (GetComponent<Rigidbody>())
+			GetComponent<Rigidbody>().freezeRotation = true;
 	}
 }

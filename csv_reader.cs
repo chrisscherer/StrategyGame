@@ -22,7 +22,7 @@ public class csv_reader : MonoBehaviour {
 	}
 
 	public void read_in_generals(){
-		StreamReader reader = new StreamReader("/Users/christopherscherer/TimeLords/Assets/Standard Assets/Scripts/general_list.csv");
+		StreamReader reader = new StreamReader(Application.dataPath + "/Standard Assets/Resources/general_list.csv");
 		
 		try
 		{
@@ -78,7 +78,7 @@ public class csv_reader : MonoBehaviour {
 					}
 				}
 				game_generals.Add (new_g);
-				Debug.Log ("In reader: " + game_generals[j].Name);
+//				Debug.Log ("In reader: " + game_generals[j].Name);
 				j++;
 			}
 			while(reader.Peek () != -1);
@@ -96,7 +96,7 @@ public class csv_reader : MonoBehaviour {
 	}
 
 	public void read_in_board_sections(){
-		StreamReader reader = new StreamReader("/Users/christopherscherer/TimeLords/Assets/Standard Assets/Scripts/board_tiles.csv");
+		StreamReader reader = new StreamReader(Application.dataPath + "/Standard Assets/Resources/board_tiles.csv");
 		int k = 0;
 		BoardSection board_section = new BoardSection();
 		try

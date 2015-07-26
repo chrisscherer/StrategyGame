@@ -28,7 +28,7 @@ public class generate_terrain : MonoBehaviour {
 		for(int x=-radius;x<=radius;x++){
 			for(int z=-radius;z<=radius;z++){
 				GameObject cube = (GameObject)Instantiate(Resources.Load(resource_name));
-				cube.renderer.material = Resources.Load<Material>(get_material_name());
+				cube.GetComponent<Renderer>().material = Resources.Load<Material>(get_material_name());
 				cube.transform.position = new Vector3( mp.x + x, mp.y, mp.z + z);
 				cube.tag = "terrain";
 			}
@@ -109,7 +109,7 @@ public class generate_terrain : MonoBehaviour {
 
 	void clean_overlap (GameObject go){
 
-		Bounds bounds = go.renderer.bounds;
+		Bounds bounds = go.GetComponent<Renderer>().bounds;
 
 		Collider[] hitColliders = Physics.OverlapSphere(go.transform.position, bounds.extents.magnitude / 2);
 		Debug.Log (bounds.extents.magnitude);
@@ -118,7 +118,7 @@ public class generate_terrain : MonoBehaviour {
 			if(other == go){
 				continue;
 			}
-			if(bounds.Intersects(other.renderer.bounds)) {
+			if(bounds.Intersects(other.GetComponent<Renderer>().bounds)) {
 				Destroy(other);
 				break;
 			}

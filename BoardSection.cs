@@ -35,7 +35,7 @@ public class BoardSection : MonoBehaviour {
 		for(int i=-2;i<3;i++){
 			for(int j=-2;j<3;j++){
 				GameObject cube = (GameObject)Instantiate(Resources.Load("Cube"));
-				cube.renderer.material = Resources.Load<Material>(this.tiles[i + 2,j + 2].Terrain_type);
+				cube.GetComponent<Renderer>().material = Resources.Load<Material>(this.tiles[i + 2,j + 2].Terrain_type);
 				cube.transform.position = new Vector3( mp.x + i, mp.y, mp.z + j);
 				cube.tag = "terrain";
 			}

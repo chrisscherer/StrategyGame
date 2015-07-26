@@ -25,7 +25,7 @@ public class game_state : MonoBehaviour {
 		this.my_csv_reader = new csv_reader();
 		this.my_csv_reader.read_in_generals();
 		this.my_csv_reader.read_in_board_sections();
-		Screen.showCursor = true;
+		Cursor.visible = true;
 	}
 	
 	// Update is called once per frame
