@@ -11,6 +11,17 @@ public class game_state : MonoBehaviour {
 	private List<General> available_generals;
 	private csv_reader my_csv_reader;
 
+	private float tapSpeed;
+	private float key1Time;
+	private float key2Time;
+	
+	private float lastTapTime;
+	private float lastRegenTime;
+	private string lastInput;
+	
+	private string key1Name;
+	private string key2Name;
+
 	public List<Player> Players { get; set; }
 	public int Turn_number { get; set; }
 	public bool Game_over { get; set; }
@@ -18,19 +29,29 @@ public class game_state : MonoBehaviour {
 	public List<General> Available_generals { get; set; }
 	public csv_reader My_csv_reader { get; set; }
 
+	public Camera camera;
+
 	// Use this for initialization
 	void Start () {
+		this.camera = Camera.main;
 		this.players = new List<Player>();
 		this.available_generals = new List<General>();
 		this.my_csv_reader = new csv_reader();
-		this.my_csv_reader.read_in_generals();
-		this.my_csv_reader.read_in_board_sections();
+//		this.my_csv_reader.read_in_generals();
+//		this.my_csv_reader.read_in_board_sections();
 		Cursor.visible = true;
+		tapSpeed = .25f;
+		key1Name = null;
+		key2Name = null;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if(Input.GetKeyDown(KeyCode.G)){
+			
+		}
+		
+		double_tap();
 	}
 
 	void add_player(string player_name) {
@@ -63,24 +84,70 @@ public class game_state : MonoBehaviour {
 
 	void OnGUI(){
 		GUI.depth = 1;
-		player_name = GUI.TextField(new Rect(10, 10, 200, 20), player_name, 25);
-		if(GUI.Button(new Rect(Screen.width / 9.2f,Screen.height / 1.5f, Screen.width / 2.65f, Screen.height / 4), "Add Player")){
-			this.add_player(player_name);
-			player_name = "";
+		if(GUI.Button(new Rect(10,10, 100, 20), "Spawn Archer")){
+			spawn_unit(new Vector3(Random.Range (-10,10), Random.Range (-10, 10), 0), "archer");
 		}
-		if(GUI.Button(new Rect(Screen.width / 8f,Screen.height / 3f, Screen.width / 5f, Screen.height / 10), "Add Player")){
-			this.list_players();
+		if(GUI.Button(new Rect(10,40, 100, 20), "Spawn Swordsman")){
+			spawn_unit(new Vector3(Random.Range (-10,10), Random.Range (-10, 10), 0), "swordsman");
 		}
-		if(GUI.Button(new Rect(Screen.width / 12f,Screen.height / 5f, Screen.width / 5f, Screen.height / 10), "Draw Generals")){
-			this.draw_generals("start");
+	}
+
+	public void spawn_unit(Vector3 spawn_point, string unit_name){
+
+		if (unit_name == "archer"){
+			var clone = Instantiate(Resources.Load (unit_name), spawn_point, Quaternion.identity) as GameObject;
+			clone.tag = unit_name;
 		}
-		if(GUI.Button(new Rect(Screen.width / 15f,Screen.height / 8f, Screen.width / 5f, Screen.height / 10), "Draw Generals")){
-			Debug.Log (this.my_csv_reader.game_generals.Count);
+		else if(unit_name == "swordsman"){
+			var clone = Instantiate(Resources.Load (unit_name), spawn_point, Quaternion.identity) as GameObject;
+			clone.tag = unit_name;
 		}
-		if(this.players.Count > 0 && this.players[0].My_generals.Count > 0){
-			for(int k = 0; k < this.players[0].My_generals.Count; k++){
-				GUI.Box(new Rect(Screen.width / 2 + (k * 150), Screen.height - 100, Screen.width / 6, Screen.height / 6), this.players[0].My_generals[k].Name);
+	}
+
+	private void double_tap(){
+		if (Input.GetMouseButtonDown(0))
+		{
+			select_click();
+			if ((Time.time - lastTapTime) < tapSpeed && lastInput == "left_click")
+			{
+				//do stuff
+				var obj = select_click();
+				if(obj.GetComponent<Unit>()){
+					var units = GameObject.FindGameObjectsWithTag(obj.tag);
+					for (int i = 0; i < units.Length;i++){
+						units[i].GetComponent<Unit>().select_unit();
+					}
+				}
+
 			}
+			lastTapTime = Time.time;
+			lastInput = "left_click";
 		}
+
+	}
+
+	private GameObject select_click(){
+		Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+		if(Physics.Raycast (ray, out hit)){
+			if(hit.transform.gameObject.GetComponent<Unit>())
+			{
+				if(hit.transform.gameObject.GetComponent<Unit>().selected){
+
+				}
+				else{
+					hit.transform.gameObject.GetComponent<Unit>().select_unit();
+				}
+			}
+			else{
+				var units = GameObject.FindObjectsOfType<Unit>();
+
+				for(int i = 0; i < units.Length; i++){
+					units[i].deselect_unit();
+				}
+			}
+			return hit.transform.gameObject;
+		}
+		return null;
 	}
 }

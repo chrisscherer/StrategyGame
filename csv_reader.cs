@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 
-public class csv_reader : MonoBehaviour {
+public class csv_reader {
 
 	public List<General> game_generals = new List<General>();
 	public List<Tile> game_tiles = new List<Tile>();
